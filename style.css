@@ -1,5 +1,21 @@
+
+body{
+    font-weight: bolder;
+    font-family: system-ui;
+}
+
+
 h1 {
     font-size:large ;
     font-weight: bold;
     color:yellow;
+}
+
+h2{
+    color:aqua;
+    background-color: black;
+    
+}
+h6{
+    color: red;
 }
