@@ -6,9 +6,8 @@ body{
 
 
 h1 {
-    font-size:large ;
-    font-weight: bold;
     color:yellow;
+    background-color: black;
 }
 
 h2{
