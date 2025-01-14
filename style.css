@@ -2,8 +2,8 @@
 body{
     font-weight: bolder;
     font-family: system-ui;
-    background-color: (rgb(128, 2, 2),rgb(88, 78, 236));
-    background-blend-mode: screen;
+    background: linear-gradient(-225deg, #0054f0 0%, #d9ff00 56%, #ff0022 100%);;
+    
 }
 
 
