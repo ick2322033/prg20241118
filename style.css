@@ -2,20 +2,19 @@
 body{
     font-weight: bolder;
     font-family: system-ui;
-    background-color: black;
+    background-color: gray;
 }
 
 
 h1 {
-    color:yellow;
-    background-color: black;
+    color:yellow; 
 }
 
 h2{
-    color:aqua;
-    background-color: black;
+    color:aqua;  
     
 }
+
 h6{
     color: red;
 }
