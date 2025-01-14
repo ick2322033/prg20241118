@@ -32,8 +32,25 @@
 
                 </div>
             </fieldset>
-            <input type="submit" value="送　　信">
+            <input type="button" value="送　　信" onclick="ques()">
+            
+            <script>
+                function ques(){
+                    if(window.confirm("申し込みますか？")){
+                       alert("完了しました")
+                       setTimeout(() => {
+                           location.href = "./index.html";
+                        }, 3000);
                 
+                    }else{
+                        send(); 
+                    }
+                }
+
+                function send(){
+                    alert("できませんでした")
+                }
+            </Script>
         </form>
 
         <button onclick="location.href='./index.html'">戻る</button>              
