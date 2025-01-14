@@ -3,7 +3,7 @@ body{
     font-weight: bolder;
     font-family: system-ui;
     background-color: (rgb(128, 2, 2),rgb(88, 78, 236));
-    background-blend-mode:screen;
+    background-blend-mode: screen;
 }
 
 
