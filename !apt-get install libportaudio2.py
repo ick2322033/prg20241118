@@ -1,0 +1,70 @@
+import sounddevice as sd
+import numpy as np
+import whisper
+import requests
+import json
+import google.generativeai as genai
+
+# Gemini APIキーを設定
+gemini_api_key = "AIzaSyDPjdazU05Wrrcn2rTMOtuR6JOAsDa1Frs"  # 取得したAPIキーを設定
+genai.configure(api_key=gemini_api_key)
+model = genai.GenerativeModel('gemini-pro')
+
+def record_audio(duration=5, fs=16000, device=0):
+    """音声を録音し、NumPy配列として返す。"""
+    print("録音開始...")
+    recording = sd.rec(int(duration * fs), samplerate=fs, channels=0, device=device)
+    sd.wait()
+    print("録音終了")
+    return recording.flatten()
+
+def audio_to_text_whisper(audio_data, fs=16000):
+    """Whisperを使って音声をテキストに変換する。"""
+    choice = "large"
+    whisper_model = whisper.load_model(choice)
+    result = whisper_model.transcribe(audio_data.astype(np.float32), language="ja")
+    return result["text"]
+
+def get_gemini_response(text):
+    """Gemini APIにテキストを送信して回答を得る。"""
+    try:
+        response = model.generate_content(text)
+        return response.text
+    except Exception as e:
+        return f"Gemini APIエラー: {e}"
+
+def text_to_speech_voicevox(text, speaker=1):
+    """VOICEVOX APIを使ってテキストを音声に変換し、再生する。"""
+    query_payload = {"text": text, "speaker": speaker}
+    try:
+        res1 = requests.post("http://localhost:50021/audio_query", params=query_payload)
+        res1.raise_for_status()  # エラーレスポンスの場合に例外を発生させる
+        res2 = requests.post(
+            "http://localhost:50021/synthesis",
+            headers={"Content-Type": "application/json"},
+            params={"speaker": speaker},
+            data=json.dumps(res1.json()),
+        )
+        res2.raise_for_status()
+        wav_data = np.frombuffer(res2.content, dtype=np.int16)
+        sd.play(wav_data, 24000)
+        sd.wait()
+    except requests.exceptions.RequestException as e:
+        print(f"VOICEVOX APIエラー: {e}")
+    except json.JSONDecodeError as e:
+        print(f"VOICEVOX APIレスポンスエラー: {e}")
+
+# 1. 音声録音
+recorded_audio = record_audio()
+
+# 2. Whisperによる音声認識
+recognized_text = audio_to_text_whisper(recorded_audio)
+print(f"認識結果: {recognized_text}")
+
+# 3. Gemini APIによる回答生成
+gemini_response = get_gemini_response(recognized_text)
+print(f"Geminiの回答: {gemini_response}")
+
+# 4. VOICEVOXによる音声合成と出力
+if gemini_response:
+    text_to_speech_voicevox(gemini_response)
